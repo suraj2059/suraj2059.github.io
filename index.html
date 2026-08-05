@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suraj Kumar Shreewastav — Fullstack Developer</title>
+<meta name="description" content="Portfolio of Suraj Kumar Shreewastav, Fullstack Developer (PHP, Laravel, JavaScript, MySQL) based in Kathmandu, Nepal.">
+<style>
+  :root{
+    --bg: #0E1320;
+    --bg-alt: #131A2B;
+    --surface: #171F33;
+    --line: #262F49;
+    --text: #E9ECF6;
+    --text-dim: #8891AC;
+    --text-faint: #57607F;
+    --accent: #6C8CFF;
+    --accent-dim: #3E4C8A;
+    --green: #3FDDA3;
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+  ::selection{ background:var(--accent); color:#0E1320; }
+
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- background grid texture ---------- */
+  .bg-grid{
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity:0.18;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:10;
+    background:rgba(14,19,32,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    max-width:920px; margin:0 auto;
+  }
+  .logo{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--text);
+    letter-spacing:0.02em;
+    text-decoration:none;
+  }
+  .logo span{ color:var(--accent); }
+  nav ul{
+    list-style:none;
+    display:flex;
+    gap:28px;
+  }
+  nav a{
+    text-decoration:none;
+    font-size:13px;
+    color:var(--text-dim);
+    font-family:var(--mono);
+    letter-spacing:0.02em;
+    transition:color 0.15s ease;
+  }
+  nav a:hover{ color:var(--accent); }
+  .nav-links{ display:flex; }
+  @media (max-width:600px){
+    .nav-links{ display:none; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:96px 0 72px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px;
+    background:var(--green);
+    border-radius:50%;
+    display:inline-block;
+    box-shadow:0 0 0 3px rgba(63,221,163,0.15);
+  }
+  h1{
+    font-size:clamp(34px, 6vw, 56px);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    line-height:1.08;
+    max-width:14ch;
+  }
+  .hero-role{
+    font-family:var(--mono);
+    font-size:clamp(14px,2vw,17px);
+    color:var(--accent);
+    margin-top:18px;
+    letter-spacing:0.01em;
+  }
+  .hero-desc{
+    max-width:56ch;
+    color:var(--text-dim);
+    font-size:16px;
+    margin-top:20px;
+  }
+  .hero-cta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:34px;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13.5px;
+    padding:11px 20px;
+    border-radius:6px;
+    text-decoration:none;
+    border:1px solid var(--line);
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-primary{
+    background:var(--accent);
+    color:#0B0F1A;
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  .btn-primary:hover{ background:#7f9bff; }
+  .btn-ghost{
+    color:var(--text);
+    background:var(--surface);
+  }
+  .btn-ghost:hover{ border-color:var(--accent-dim); color:var(--accent); }
+
+  .hero-meta{
+    margin-top:44px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- section shell ---------- */
+  section{ padding:64px 0; border-top:1px solid var(--line); }
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:36px;
+  }
+  .sec-num{
+    font-family:var(--mono);
+    color:var(--text-faint);
+    font-size:13px;
+  }
+  .sec-title{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- stack / skills ---------- */
+  .stack-groups{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:28px;
+  }
+  .stack-group h3{
+    font-family:var(--mono);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--text-faint);
+    margin-bottom:14px;
+    font-weight:600;
+  }
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tag{
+    font-family:var(--mono);
+    font-size:12.5px;
+    padding:6px 11px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:5px;
+    color:var(--text-dim);
+  }
+
+  /* ---------- experience ---------- */
+  .exp-item{
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:24px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .exp-item:last-child{ border-bottom:none; }
+  .exp-date{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    padding-top:2px;
+  }
+  .exp-role{ font-weight:700; font-size:16px; }
+  .exp-org{ color:var(--accent); font-size:14px; margin-top:2px; }
+  .exp-list{
+    margin-top:14px;
+    padding-left:18px;
+    color:var(--text-dim);
+    font-size:14.5px;
+  }
+  .exp-list li{ margin-bottom:7px; }
+  @media (max-width:640px){
+    .exp-item{ grid-template-columns:1fr; gap:6px; }
+  }
+
+  /* ---------- projects: schema table ---------- */
+  .schema-note{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    margin-bottom:18px;
+  }
+  .schema{
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .schema-row{
+    border-bottom:1px solid var(--line);
+  }
+  .schema-row:last-child{ border-bottom:none; }
+  .schema-row summary{
+    list-style:none;
+    cursor:pointer;
+    display:grid;
+    grid-template-columns:44px 1fr auto 20px;
+    align-items:center;
+    gap:16px;
+    padding:16px 20px;
+    background:var(--bg-alt);
+    transition:background 0.15s ease;
+  }
+  .schema-row summary::-webkit-details-marker{ display:none; }
+  .schema-row summary:hover{ background:var(--surface); }
+  .schema-id{
+    font-family:var(--mono);
+    color:var(--accent);
+    font-size:13px;
+  }
+  .schema-name{
+    font-weight:700;
+    font-size:15px;
+  }
+  .schema-stack{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    display:none;
+  }
+  @media (min-width:700px){
+    .schema-stack{ display:block; }
+  }
+  .schema-chevron{
+    color:var(--text-faint);
+    font-family:var(--mono);
+    font-size:13px;
+    transition:transform 0.15s ease;
+  }
+  details[open] .schema-chevron{ transform:rotate(45deg); }
+  .schema-body{
+    padding:0 20px 22px 80px;
+    color:var(--text-dim);
+    font-size:14.5px;
+  }
+  .schema-body .schema-stack-mobile{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    margin-bottom:10px;
+  }
+  @media (min-width:700px){
+    .schema-stack-mobile{ display:none; }
+  }
+  .schema-body ul{ padding-left:18px; margin-top:8px; }
+  .schema-body li{ margin-bottom:6px; }
+
+  /* ---------- education ---------- */
+  .edu-card{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:24px;
+    background:var(--bg-alt);
+  }
+  .edu-card .exp-date{ margin-bottom:4px; }
+  .edu-course{
+    margin-top:12px;
+    font-size:13.5px;
+    color:var(--text-dim);
+  }
+  .edu-course span{ color:var(--text-faint); }
+
+  /* ---------- footer / contact ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:56px 0 40px;
+  }
+  .contact-title{
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    max-width:16ch;
+  }
+  .contact-sub{
+    color:var(--text-dim);
+    margin-top:12px;
+    font-size:15px;
+    max-width:50ch;
+  }
+  .contact-grid{
+    margin-top:32px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+  }
+  .contact-link{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    text-decoration:none;
+    font-family:var(--mono);
+    font-size:13.5px;
+    color:var(--text);
+    background:var(--bg-alt);
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .contact-link:hover{ border-color:var(--accent); color:var(--accent); }
+  .contact-link .arrow{ color:var(--text-faint); }
+  .foot-bottom{
+    margin-top:48px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-faint);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header>
+  <nav>
+    <a href="#top" class="logo">suraj<span>.</span>dev</a>
+    <ul class="nav-links">
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero" style="border-top:none;">
+    <p class="eyebrow">open to mid&#8209;level fullstack roles</p>
+    <h1>Suraj Kumar Shreewastav</h1>
+    <p class="hero-role">Fullstack Developer — PHP · Laravel · JavaScript</p>
+    <p class="hero-desc">
+      I build complete, database-driven web applications end to end — Laravel
+      and MySQL on the back end, REST APIs and authentication in between, and
+      responsive HTML/CSS/JavaScript front ends tying it all together. Based
+      in Kathmandu, Nepal.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="mailto:surajshreewastav491@gmail.com">Email me →</a>
+      <a class="btn btn-ghost" href="https://github.com/suraj2059" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/suraj-shreewastav-130300304" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="hero-meta">
+      <span>kathmandu, nepal</span>
+      <span>+977 9747840794</span>
+      <span>bca, 8th semester</span>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Stack</h2>
+    </div>
+    <div class="stack-groups">
+      <div class="stack-group">
+        <h3>Languages</h3>
+        <div class="tags">
+          <span class="tag">PHP</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Frameworks &amp; libraries</h3>
+        <div class="tags">
+          <span class="tag">Laravel</span>
+          <span class="tag">jQuery</span>
+          <span class="tag">Bootstrap</span>
+          <span class="tag">WordPress</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Backend &amp; architecture</h3>
+        <div class="tags">
+          <span class="tag">MVC</span>
+          <span class="tag">OOP</span>
+          <span class="tag">REST APIs</span>
+          <span class="tag">Auth &amp; CRUD</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>Database &amp; tools</h3>
+        <div class="tags">
+          <span class="tag">MySQL</span>
+          <span class="tag">Git &amp; GitHub</span>
+          <span class="tag">Postman</span>
+          <span class="tag">XAMPP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Experience</h2>
+    </div>
+    <div class="exp-item">
+      <div class="exp-date">Sep — Dec 2024</div>
+      <div>
+        <div class="exp-role">PHP Laravel Developer Intern</div>
+        <div class="exp-org">Ingrails Pvt. Ltd. (Veda) — Jawalakhel, Kathmandu</div>
+        <ul class="exp-list">
+          <li>Developed and maintained dynamic web applications using Laravel, applying MVC architecture and OOP principles.</li>
+          <li>Implemented authentication, authorization, and CRUD functionality across multiple modules.</li>
+          <li>Designed and managed MySQL databases, including query writing and schema updates.</li>
+          <li>Built and consumed REST APIs and backend business logic; used Postman for endpoint testing.</li>
+          <li>Collaborated with senior developers using Git and Agile development practices.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Projects</h2>
+    </div>
+    <p class="schema-note">select * from projects &nbsp;— click a row to expand</p>
+
+    <div class="schema">
+
+      <details class="schema-row">
+        <summary>
+          <span class="schema-id">01</span>
+          <span class="schema-name">Job Management System</span>
+          <span class="schema-stack">Laravel · MySQL · Bootstrap</span>
+          <span class="schema-chevron">+</span>
+        </summary>
+        <div class="schema-body">
+          <div class="schema-stack-mobile">Laravel · MySQL · Bootstrap</div>
+          <p>A recruitment platform for employers and job seekers.</p>
+          <ul>
+            <li>Secure login, job posting, and application workflows</li>
+            <li>Responsive UI backed by a MySQL database for application management</li>
+            <li>Tested and fixed bugs across modules</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="schema-row">
+        <summary>
+          <span class="schema-id">02</span>
+          <span class="schema-name">Tourism Management System</span>
+          <span class="schema-stack">Laravel · MySQL · JavaScript</span>
+          <span class="schema-chevron">+</span>
+        </summary>
+        <div class="schema-body">
+          <div class="schema-stack-mobile">Laravel · MySQL · JavaScript</div>
+          <p>A tourism booking and management platform.</p>
+          <ul>
+            <li>Package management, bookings, and inquiry modules</li>
+            <li>Responsive pages across devices</li>
+            <li>Improved overall usability and performance</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="schema-row">
+        <summary>
+          <span class="schema-id">03</span>
+          <span class="schema-name">Repair &amp; Mobile Shop Management</span>
+          <span class="schema-stack">Laravel · MySQL · JavaScript</span>
+          <span class="schema-chevron">+</span>
+        </summary>
+        <div class="schema-body">
+          <div class="schema-stack-mobile">Laravel · MySQL · JavaScript</div>
+          <p>A repair and inventory management system for a computer &amp; mobile repair shop.</p>
+          <ul>
+            <li>Customer, inventory, billing, and repair-tracking modules</li>
+            <li>Secure authentication and CRUD operations</li>
+            <li>Debugged and tested core functionality</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="schema-row">
+        <summary>
+          <span class="schema-id">04</span>
+          <span class="schema-name">Teacher Management System</span>
+          <span class="schema-stack">Core PHP · MySQL</span>
+          <span class="schema-chevron">+</span>
+        </summary>
+        <div class="schema-body">
+          <div class="schema-stack-mobile">Core PHP · MySQL</div>
+          <p>Built from scratch in core PHP — no framework — to strengthen fundamentals.</p>
+          <ul>
+            <li>Hand-rolled MVC-style structuring and OOP</li>
+            <li>Raw SQL queries against MySQL</li>
+            <li>Published as a GitHub portfolio project</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="schema-row">
+        <summary>
+          <span class="schema-id">05</span>
+          <span class="schema-name">Pneumonia Detection System</span>
+          <span class="schema-stack">Python · TensorFlow/Keras</span>
+          <span class="schema-chevron">+</span>
+        </summary>
+        <div class="schema-body">
+          <div class="schema-stack-mobile">Python · TensorFlow/Keras · Streamlit</div>
+          <p>Final-year project: a CNN-based disease detection system for chest X-rays.</p>
+          <ul>
+            <li>VGG16 transfer-learning model reaching 92.95% accuracy</li>
+            <li>Grad-CAM heatmaps for visual explainability of predictions</li>
+            <li>Built with Streamlit; published on GitHub</li>
+          </ul>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Education</h2>
+    </div>
+    <div class="edu-card">
+      <div class="exp-date">2021 — Present</div>
+      <div class="exp-role">Bachelor of Computer Application (BCA)</div>
+      <div class="exp-org">Whitefield International College, Kathmandu, Nepal — 8th Semester</div>
+      <p class="edu-course"><span>Coursework:</span> Data Structures, Database Management Systems, Software Engineering, Object-Oriented Programming, Web Technologies</p>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <h2 class="contact-title">Let's build something.</h2>
+    <p class="contact-sub">Open to mid-level fullstack roles — reach out and I'll get back to you quickly.</p>
+    <div class="contact-grid">
+      <a class="contact-link" href="mailto:surajshreewastav491@gmail.com">
+        <span>surajshreewastav491@gmail.com</span><span class="arrow">→</span>
+      </a>
+      <a class="contact-link" href="tel:+9779747840794">
+        <span>+977 9747840794</span><span class="arrow">→</span>
+      </a>
+      <a class="contact-link" href="https://github.com/suraj2059" target="_blank" rel="noopener">
+        <span>github.com/suraj2059</span><span class="arrow">→</span>
+      </a>
+      <a class="contact-link" href="https://linkedin.com/in/suraj-shreewastav-130300304" target="_blank" rel="noopener">
+        <span>linkedin.com/in/suraj-shreewastav</span><span class="arrow">→</span>
+      </a>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Suraj Kumar Shreewastav</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
