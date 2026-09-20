@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Job Board — UI Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --forest: #1B4332;
+    --forest-dark: #12301F;
+    --gold: #C9962F;
+    --gold-soft: #F1E2C2;
+    --text: #21301C;
+    --text-soft: #5C6B58;
+    --line: #DAD7CD;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14201A;
+      --surface: #1B2A22;
+      --forest: #6FBF97;
+      --forest-dark: #8FD4AE;
+      --gold: #E0B45C;
+      --gold-soft: #3A3120;
+      --text: #EDEFEA;
+      --text-soft: #A6B3A0;
+      --line: #33453A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14201A; --surface: #1B2A22; --forest: #6FBF97; --forest-dark: #8FD4AE;
+    --gold: #E0B45C; --gold-soft: #3A3120; --text: #EDEFEA; --text-soft: #A6B3A0; --line: #33453A;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    min-height: 100%;
+  }
+  .frame-label {
+    max-width: 1040px;
+    margin: 28px auto 8px;
+    padding: 0 20px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--text-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .frame-label b { color: var(--forest); font-weight: 600; }
+  .app {
+    max-width: 1040px;
+    margin: 0 auto 60px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 640px;
+  }
+  header.topbar {
+    background: var(--forest-dark);
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #F7F6F2;
+    letter-spacing: 0.01em;
+  }
+  .search {
+    flex: 1;
+    max-width: 420px;
+    min-width: 200px;
+    background: rgba(247,246,242,0.12);
+    border: 1px solid rgba(247,246,242,0.25);
+    border-radius: 3px;
+    padding: 9px 14px;
+    color: #F7F6F2;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+  }
+  .search::placeholder { color: rgba(247,246,242,0.55); }
+  .profile-dot {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--forest-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Screen: Listings ---- */
+  .listings-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+  }
+  @media (max-width: 640px) {
+    .listings-layout { grid-template-columns: 1fr; }
+    .filters { display: none; }
+  }
+  .filters {
+    border-right: 1px solid var(--line);
+    padding: 28px 22px;
+  }
+  .filters h3 {
+    font-size: 12px;
+    text-transform: none;
+    letter-spacing: 0.03em;
+    color: var(--text-soft);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+  .filter-group { margin-bottom: 26px; }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 9px;
+    cursor: pointer;
+  }
+  .filter-row input { accent-color: var(--forest); }
+
+  .listing-col { padding: 28px 32px; }
+  .listing-heading {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+  .listing-sub {
+    color: var(--text-soft);
+    font-size: 14px;
+    margin: 0 0 24px;
+  }
+  .job-card {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .job-card:hover { border-color: var(--forest); }
+  .job-main { min-width: 0; }
+  .job-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 5px;
+  }
+  .job-company {
+    color: var(--text-soft);
+    font-size: 13.5px;
+    margin: 0 0 10px;
+  }
+  .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12px;
+    color: var(--forest);
+    background: var(--gold-soft);
+    padding: 3px 9px;
+    border-radius: 2px;
+  }
+  .job-meta {
+    text-align: right;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--text-soft);
+    white-space: nowrap;
+  }
+  .job-meta .salary { color: var(--text); font-weight: 600; display: block; margin-bottom: 4px; }
+
+  /* ---- Screen: Detail ---- */
+  .detail-layout { display: none; }
+  .detail-layout.active { display: grid; grid-template-columns: 1fr 300px; }
+  @media (max-width: 640px) {
+    .detail-layout.active { grid-template-columns: 1fr; }
+  }
+  .listings-layout.active { display: grid; }
+  .listings-layout:not(.active) { display: none; }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-soft);
+    cursor: pointer;
+    margin-bottom: 18px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    padding: 0;
+  }
+  .back-link:hover { color: var(--forest); }
+
+  .detail-main { padding: 30px 36px; }
+  .detail-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
+  .detail-company {
+    color: var(--text-soft);
+    font-size: 15px;
+    margin: 0 0 20px;
+  }
+  .detail-tags { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+  .detail-section { margin-bottom: 24px; }
+  .detail-section h4 {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .detail-section p, .detail-section li {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 8px;
+  }
+  .detail-section ul { margin: 0; padding-left: 18px; }
+
+  .apply-rail {
+    border-left: 1px solid var(--line);
+    padding: 30px 26px;
+    background: var(--bg);
+  }
+  .apply-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 3px;
+    padding: 20px;
+  }
+  .apply-card .salary-big {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+  .apply-card .salary-label {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    margin: 0 0 18px;
+  }
+  .apply-btn {
+    width: 100%;
+    background: var(--forest);
+    color: #F7F6F2;
+    border: none;
+    padding: 12px;
+    border-radius: 3px;
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .apply-btn:hover { background: var(--forest-dark); }
+  .save-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 11px;
+    border-radius: 3px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .meta-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-soft);
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+  <div class="frame-label">
+    <span>Job listings \u2192 job detail flow</span>
+    <span><b>Click a job card</b> to view the detail screen</span>
+  </div>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">Fieldnote Jobs</div>
+      <input class="search" type="text" placeholder="Search job title or company" />
+      <div class="profile-dot">SS</div>
+    </header>
+
+    <!-- Screen 1: Listings -->
+    <div class="listings-layout active" id="listings-screen">
+      <aside class="filters">
+        <div class="filter-group">
+          <h3>Job type</h3>
+          <label class="filter-row"><input type="checkbox" checked> Full-time</label>
+          <label class="filter-row"><input type="checkbox"> Internship</label>
+          <label class="filter-row"><input type="checkbox"> Remote</label>
+        </div>
+        <div class="filter-group">
+          <h3>Experience</h3>
+          <label class="filter-row"><input type="checkbox" checked> Entry level</label>
+          <label class="filter-row"><input type="checkbox"> Mid level</label>
+        </div>
+        <div class="filter-group">
+          <h3>Category</h3>
+          <label class="filter-row"><input type="checkbox" checked> Development</label>
+          <label class="filter-row"><input type="checkbox"> Design</label>
+          <label class="filter-row"><input type="checkbox"> QA</label>
+        </div>
+      </aside>
+
+      <div class="listing-col">
+        <h1 class="listing-heading">142 jobs found</h1>
+        <p class="listing-sub">Showing entry-level development roles in Kathmandu Valley</p>
+
+        <div class="job-card" onclick="showDetail()">
+          <div class="job-main">
+            <p class="job-title">Junior Laravel Developer</p>
+            <p class="job-company">Prological Nepal &middot; Kathmandu</p>
+            <div class="job-tags">
+              <span class="tag">Full-time</span>
+              <span class="tag">Entry level</span>
+              <span class="tag">Laravel</span>
+            </div>
+          </div>
+          <div class="job-meta">
+            <span class="salary">NRs 35,000\u201340,000</span>
+            Posted 2 days ago
+          </div>
+        </div>
+
+        <div class="job-card" onclick="showDetail()">
+          <div class="job-main">
+            <p class="job-title">Frontend Developer</p>
+            <p class="job-company">Kalash Services &middot; Lalitpur</p>
+            <div class="job-tags">
+              <span class="tag">Full-time</span>
+              <span class="tag">Entry level</span>
+              <span class="tag">JavaScript</span>
+            </div>
+          </div>
+          <div class="job-meta">
+            <span class="salary">Negotiable</span>
+            Posted 4 days ago
+          </div>
+        </div>
+
+        <div class="job-card" onclick="showDetail()">
+          <div class="job-main">
+            <p class="job-title">QA Engineer</p>
+            <p class="job-company">Night Owls Pvt. Ltd. &middot; Remote</p>
+            <div class="job-tags">
+              <span class="tag">Full-time</span>
+              <span class="tag">Night shift</span>
+              <span class="tag">QA</span>
+            </div>
+          </div>
+          <div class="job-meta">
+            <span class="salary">NRs 60,000\u201370,000</span>
+            Posted 1 week ago
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Detail -->
+    <div class="detail-layout" id="detail-screen">
+      <div class="detail-main">
+        <button class="back-link" onclick="showListings()">&larr; Back to listings</button>
+        <h1 class="detail-title">Junior Laravel Developer</h1>
+        <p class="detail-company">Prological Nepal &middot; Kathmandu, Nepal</p>
+        <div class="detail-tags">
+          <span class="tag">Full-time</span>
+          <span class="tag">Entry level</span>
+          <span class="tag">Laravel</span>
+          <span class="tag">MySQL</span>
+        </div>
+
+        <div class="detail-section">
+          <h4>About the role</h4>
+          <p>We're looking for a Laravel developer to help build and maintain scalable web applications, working closely with our design and QA teams to ship reliable features.</p>
+        </div>
+
+        <div class="detail-section">
+          <h4>What you'll do</h4>
+          <ul>
+            <li>Build and maintain backend features using Laravel and MySQL</li>
+            <li>Develop and integrate RESTful APIs</li>
+            <li>Write clean, testable code and take part in code review</li>
+          </ul>
+        </div>
+
+        <div class="detail-section">
+          <h4>What we're looking for</h4>
+          <ul>
+            <li>Solid understanding of PHP and Laravel fundamentals</li>
+            <li>Experience with MySQL and REST APIs</li>
+            <li>Comfortable working in a small, fast-moving team</li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="apply-rail">
+        <div class="apply-card">
+          <p class="salary-big">NRs 35,000\u201340,000</p>
+          <p class="salary-label">Monthly, negotiable on experience</p>
+          <button class="apply-btn">Apply now</button>
+          <button class="save-btn">Save for later</button>
+          <div class="meta-line"><span>Job type</span><span>Full-time</span></div>
+          <div class="meta-line"><span>Location</span><span>Kathmandu</span></div>
+          <div class="meta-line"><span>Deadline</span><span>Sep 30, 2026</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    function showDetail() {
+      document.getElementById('listings-screen').classList.remove('active');
+      document.getElementById('detail-screen').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function showListings() {
+      document.getElementById('detail-screen').classList.remove('active');
+      document.getElementById('listings-screen').classList.add('active');
+    }
+  </script>
+</body>
+</html>
